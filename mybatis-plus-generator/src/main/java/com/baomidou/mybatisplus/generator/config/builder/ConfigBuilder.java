@@ -616,7 +616,13 @@ public class ConfigBuilder {
                 field.setType(results.getString(dbQuery.fieldType()));
                 field.setPropertyName(strategyConfig, processName(field.getName(), strategy));
                 field.setColumnType(dataSourceConfig.getTypeConvert().processTypeConvert(globalConfig, field.getType()));
-                field.setComment(results.getString(dbQuery.fieldComment()));
+                //自动处理批注换行问题
+                String comment = results.getString(dbQuery.fieldComment());
+                if(StringUtils.isNotEmpty(comment)){
+                    comment = comment.replaceAll("\r\n" , "");
+                }
+                field.setComment(comment);
+
                 if (strategyConfig.includeSuperEntityColumns(field.getName())) {
                     // 跳过公共字段
                     commonFieldList.add(field);
